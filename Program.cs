@@ -8,10 +8,11 @@ namespace Blockchain
         {
             DependencyManager.Fill(new TransactionPool(), new BlockMiner(), new EmbedServer("5449"));
             DependencyManager.BlockMiner.Start();
-            DependencyManager.EmbedServer.Start(); 
+            DependencyManager.EmbedServer.Start();
+            Console.WriteLine("Pritisni katerokoli tipko za izhod");
             Console.ReadKey();
             DependencyManager.BlockMiner.Stop();
-            DependencyManager.EmbedServer.Stop();
+            DependencyManager.EmbedServer.Stop();    
         }
     }
     public static class DependencyManager

@@ -11,11 +11,18 @@ namespace Blockchain
 {
     public class BlockMiner
     {
-        private static int MINING_PERIOD = 10000;
+        // MINING_PERIOD je fisken čas, vsakih x sekund se naredi nov blok, 
+        private static readonly int MINING_PERIOD = 20000;
+        private static readonly int STEVILO_TRANSAKCIJ_V_BLOKU_MIN = 1;
+        private static readonly string KOLIKO_NICEL_NA_ZACETKU_HASH = "0000";
+        // kliče vsakič, preden začne računati hash od bloka
         private TransactionPool TransactionPool { get => DependencyManager.TransactionPool; }
         public List<Block> Blockchain { get; private set; }
         private CancellationTokenSource cancellationToken;
-
+        
+        /// <summary>
+        /// >Startam na začetku izvajanja programa
+        /// </summary>
         public BlockMiner()
         {
             Blockchain = new List<Block>();
@@ -43,19 +50,28 @@ namespace Blockchain
                 Thread.Sleep(remainTime < 0 ? 0 : remainTime);
             }
         }
+
+        /// <summary>
+        /// Ta metoda naredi nov blok (vključno z dodjanjem transakcij, računanjem hash in dodanjanje na konec verige blokov
+        /// </summary>
         private void GenerateBlock()
         {
             var lastBlock = Blockchain.LastOrDefault();
             var block = new Block()
             {
-                TimeStamp = DateTime.Now,
+                TimeStamp = DateTime.UtcNow,
                 Nounce = 0,
                 TransactionList = TransactionPool.TakeAll(),
                 Index = (lastBlock?.Index + 1 ?? 0),
                 PrevHash = lastBlock?.Hash ?? string.Empty
             };
-            MineBlock(block);
-            Blockchain.Add(block);
+
+            // hash računam, samo če je v bloku večje, kot je nastavljeno v spremenljivki
+            if (block.TransactionList.Count() >= STEVILO_TRANSAKCIJ_V_BLOKU_MIN)
+            {
+                MineBlock(block);
+                Blockchain.Add(block);
+            }
         }
 
         private void MineBlock(Block block)
@@ -69,7 +85,9 @@ namespace Blockchain
                 var rowData = block.Index + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash;
                 hash = CalculateHash(CalculateHash(rowData));
             }
-            while (!hash.StartsWith("0000"));
+
+            // kakšna je zahtevnost je določeno v spremenljivki
+            while (!hash.StartsWith(KOLIKO_NICEL_NA_ZACETKU_HASH));
             block.Hash = hash;
             block.Nounce = nounce;
         }
