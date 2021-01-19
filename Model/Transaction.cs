@@ -4,7 +4,7 @@
     {
 
         public Transaction() { }
-        public Transaction(string from, string to, int amount)
+        public Transaction(string from, string to, string amount)
         {
             this.From = from;
             this.To = to;
@@ -12,6 +12,6 @@
         }
         public string From { get; set; }
         public string To { get; set; }
-        public int Amount { get; set; }
+        public string Amount { get; set; }
     }
 }

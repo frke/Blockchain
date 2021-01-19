@@ -94,8 +94,13 @@ namespace Blockchain
 
         private string FindMerkleRootHash(IList<Transaction> transactionList)
         {
-            var transactionStrList = transactionList.Select(tran => CalculateHash(CalculateHash(tran.From + tran.To + tran.Amount))).ToList();
-            return BuildMerkleRootHash(transactionStrList);
+            var transactionStrList = transactionList.Select(
+                tran => CalculateHash(
+                    CalculateHash(tran.From + tran.To + tran.Amount)
+                    )
+                ).ToList();
+            string BuildMerkeRootHash = BuildMerkleRootHash(transactionStrList);
+            return BuildMerkeRootHash;
         }
 
         private string BuildMerkleRootHash(IList<string> merkelLeaves)

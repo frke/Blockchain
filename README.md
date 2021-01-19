@@ -26,7 +26,7 @@ Za debug in test sem uporabil Postman https://web.postman.co
 
 Klic za dodajanje transakcije je POST, json:
 POST http://localhost:5449/api/add
-{"From":"Franc","To":"Janez","Amount":15}
+{"From":"Franc","To":"Janez","Amount":"15"}
 
 Klic za pregled zadnjega bloka vrne json
 GET http://localhost:5449/api/blocks/latest
@@ -41,7 +41,7 @@ Odgovor:
         {
             "From": "Franc",
             "To": "Janez",
-            "Amount": 15
+            "Amount": "15"
         }
     ]
 }
