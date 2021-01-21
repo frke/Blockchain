@@ -7,7 +7,7 @@
 
 ## Opis programa in nastavitve
 
-Struktura podatkov je v mapi Model. Vsebuje Blok in Transaction. Transakcija je iz treh polj: From, To, Amount
+Struktura podatkov je v mapi Model. Vsebuje Blok in Transaction. Transakcija je iz polj: From, To, Amount, Description
 
 Bloki se kreirajo vsakih MINING_PERIOD sekund (nastavljeno 20 vsakih sekund) in če je število transakcij za obdelavo večje ali enako kot STEVILO_TRANSAKCIJ_V_BLOKU_MIN (privzeto 1)
 
@@ -26,7 +26,7 @@ Za debug in test sem uporabil Postman https://web.postman.co
 
 Klic za dodajanje transakcije je POST, json:
 POST http://localhost:5449/api/add
-{"From":"Franc","To":"Janez","Amount":"15"}
+{"From":"Franc","To":"Janez","Amount":"15","Description":"Opis tekst"}
 
 Klic za pregled zadnjega bloka vrne json
 GET http://localhost:5449/api/blocks/latest
@@ -42,6 +42,7 @@ Odgovor:
             "From": "Franc",
             "To": "Janez",
             "Amount": "15"
+            "Description":"Opis tekst"
         }
     ]
 }

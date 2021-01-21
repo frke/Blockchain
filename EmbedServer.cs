@@ -48,11 +48,11 @@ namespace Blockchain
         public sealed class Controller : WebApiController
         {
 
-            //GET http://localhost:9696/api/blocks
+            //GET http://localhost:5449/api/blocks
             [Route(HttpVerbs.Get, "/blocks")]
             public string GetAllBlocks() => JsonConvert.SerializeObject(DependencyManager.BlockMiner.Blockchain);
 
-            //GET http://localhost:9696/api/blocks/index/{index?}
+            //GET http://localhost:5449/api/blocks/index/{index?}
             [Route(HttpVerbs.Get, "/blocks/index/{index?}")]
             public string GetAllBlocks(int index)
             {
@@ -62,7 +62,7 @@ namespace Blockchain
                 return JsonConvert.SerializeObject(block);
             }
 
-            //GET http://localhost:9696/api/blocks/latest
+            //GET http://localhost:5449/api/blocks/latest
             [Route(HttpVerbs.Get, "/blocks/latest")]
             public string GetLatestBlocks()
             {
@@ -70,8 +70,8 @@ namespace Blockchain
                 return JsonConvert.SerializeObject(block);
             }
 
-            //Post http://localhost:9696/api/add
-            //Body >> {"From":"amir","To":"bob","Amount":"10"}
+            //Post http://localhost:5449/api/add
+            //Body >> {"From":"amir","To":"bob","Amount":"10", "description":"To je opis transakcije"}
             [Route(HttpVerbs.Post, "/add")]
             public void AddTransaction()
             {

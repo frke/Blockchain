@@ -11,10 +11,13 @@ namespace Blockchain
 {
     public class BlockMiner
     {
-        // MINING_PERIOD je fisken čas, vsakih x sekund se naredi nov blok, 
+        // MINING_PERIOD je fisken čas, vsakih x milisekund se naredi nov blok, 
         private static readonly int MINING_PERIOD = 20000;
+        // Hashi se ne računajo, če je število transakcij v bloku manj ali enako kot STEVILO_TRANSAKCIJ_V_BLOKU_MIN
         private static readonly int STEVILO_TRANSAKCIJ_V_BLOKU_MIN = 1;
+        // zahtevnost računanja: število ničel pove po približno koliko iteracijah se bo našel ustrezen hash. 4 ničle pomenijo nekaj 10000 ponovitev
         private static readonly string KOLIKO_NICEL_NA_ZACETKU_HASH = "0000";
+
         // kliče vsakič, preden začne računati hash od bloka
         private TransactionPool TransactionPool { get => DependencyManager.TransactionPool; }
         public List<Block> Blockchain { get; private set; }
@@ -96,7 +99,7 @@ namespace Blockchain
         {
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
-                    CalculateHash(tran.From + tran.To + tran.Amount)
+                    CalculateHash(tran.From + tran.To + tran.Amount + tran.Description)
                     )
                 ).ToList();
             string BuildMerkeRootHash = BuildMerkleRootHash(transactionStrList);
