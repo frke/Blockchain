@@ -92,9 +92,9 @@ namespace Blockchain
         /// <param name="block"></param>
         private void MineBlock(Block block)
         {
-            var merkleRootHash = FindMerkleRootHash(block.TransactionList);
+            string merkleRootHash = FindMerkleRootHash(block.TransactionList);
             long nounce = -1;
-            var hash = string.Empty;
+            string hash;
             do
             {
                 nounce++;
@@ -116,13 +116,13 @@ namespace Blockchain
         /// <returns></returns>
         private string FindMerkleRootHash(IList<Transaction> transactionList)
         {
-            /// najprej dobim listo hashev, 2-krat kličem sha256
+            // najprej dobim listo hashev, 2-krat kličem sha256
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
                     CalculateHash(tran.From + tran.To + tran.Amount + tran.Description)
                     )
                 ).ToList();
-            /// iz liste katere nato izračuna merkle root hash
+            // iz liste katere nato izračuna merkle root hash
             string BuildMerkeRootHash = BuildMerkleRootHash(transactionStrList);
             return BuildMerkeRootHash;
         }
@@ -167,22 +167,20 @@ namespace Blockchain
         public static string CalculateHash(string rawData)
         {
             // Create a SHA256   
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                // ComputeHash - returns byte array  
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+            using SHA256 sha256Hash = SHA256.Create();
+            // ComputeHash - returns byte array  
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
-                // Convert byte array to a string   
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
-                    // npr ToString("x") bi vrnil samo d 
-                    // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je to potrebno
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
+            // Convert byte array to a string   
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
+                // npr ToString("x") bi vrnil samo d 
+                // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je to potrebno
+                builder.Append(bytes[i].ToString("x2"));
             }
+            return builder.ToString();
         }
     }
 }
