@@ -15,6 +15,9 @@ namespace Blockchain
             DependencyManager.EmbedServer.Stop();    
         }
     }
+    /// <summary>
+    /// ima properties: TransactionPool, BlockMine, EmbedServer
+    /// </summary>
     public static class DependencyManager
     {
         public static TransactionPool TransactionPool { get; private set; }

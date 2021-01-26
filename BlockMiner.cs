@@ -30,18 +30,26 @@ namespace Blockchain
         {
             Blockchain = new List<Block>();
         }
+        /// <summary>
+        /// Začetek izvajanja programa. DoGenerateBlock() se sam nikoli ne konča - vsebuje while(true), zato je uporabljen cancellationToken ?????
+        /// </summary>
         public void Start()
         {
             cancellationToken = new CancellationTokenSource();
             Task.Run(() => DoGenerateBlock(), cancellationToken.Token);
             Console.WriteLine("Mining has started");
         }
+        /// <summary>
+        /// Ustavi izvajanje programa.
+        /// </summary>
         public void Stop()
         {
             cancellationToken.Cancel();
             Console.WriteLine("Mining has stopped");
         }
-
+        /// <summary>
+        /// Sproži generiranje bloka in potem počaka toliko časa, kot je nastavljeno v spremenljivki MINIG_PERIOD
+        /// </summary>
         private void DoGenerateBlock()
         {
             while (true)
@@ -69,14 +77,19 @@ namespace Blockchain
                 PrevHash = lastBlock?.Hash ?? string.Empty
             };
 
-            // hash računam, samo če je v bloku večje, kot je nastavljeno v spremenljivki
+            // hash začnem računati, samo če je v bloku večje število transakcij, kot je nastavljeno v spremenljivki
+            // to je zato, ker je rudarjenje (računanje hash) računsko zahtevna operacija.
             if (block.TransactionList.Count() >= STEVILO_TRANSAKCIJ_V_BLOKU_MIN)
             {
                 MineBlock(block);
                 Blockchain.Add(block);
             }
         }
-
+        /// <summary>
+        /// Ta metoda rudari en blok toliko časa, da najde pravi hash, ki se začne z xxxx ničlami
+        /// Ko hash najde, določi block.Hash in block.Nounce
+        /// </summary>
+        /// <param name="block"></param>
         private void MineBlock(Block block)
         {
             var merkleRootHash = FindMerkleRootHash(block.TransactionList);
@@ -95,39 +108,62 @@ namespace Blockchain
             block.Nounce = nounce;
         }
 
+        /// <summary>
+        /// Izračuna merkle root iz podanih transakcij. 
+        /// Za iste transakcije je merkleroo hasa vedno enak
+        /// </summary>
+        /// <param name="transactionList"></param>
+        /// <returns></returns>
         private string FindMerkleRootHash(IList<Transaction> transactionList)
         {
+            /// najprej dobim listo hashev, 2-krat kličem sha256
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
                     CalculateHash(tran.From + tran.To + tran.Amount + tran.Description)
                     )
                 ).ToList();
+            /// iz liste katere nato izračuna merkle root hash
             string BuildMerkeRootHash = BuildMerkleRootHash(transactionStrList);
             return BuildMerkeRootHash;
         }
 
+        /// <summary>
+        /// Naredi merklovo drevo iz vseh hashev transackij
+        /// glej python primer: https://gist.github.com/shirriff/c9fb5d98e6da79d9a772#file-merkle-py
+        /// </summary>
+        /// <param name="merkelLeaves"></param>
+        /// <returns></returns>
         private string BuildMerkleRootHash(IList<string> merkelLeaves)
         {
             if (merkelLeaves == null || !merkelLeaves.Any())
                 return string.Empty;
 
+            // če imam samo še en hash, potem je ta tudi merkletre root hash
             if (merkelLeaves.Count() == 1)
                 return merkelLeaves.First();
 
+            // če je spisek liho število, potem zadnji hash podojim, tako da dobim sodo število
             if (merkelLeaves.Count() % 2 > 0)
                 merkelLeaves.Add(merkelLeaves.Last());
 
             var merkleBranches = new List<string>();
 
+            // grem skozi listo in obdelam dva po dva hasha
             for (int i = 0; i < merkelLeaves.Count(); i += 2)
             {
+                // združim dva string in iz njih izračunam hash z dvojnim klicem sha256
                 var leafPair = string.Concat(merkelLeaves[i], merkelLeaves[i + 1]);
                 merkleBranches.Add(CalculateHash(CalculateHash(leafPair)));
             }
+            // rekurzivno kličem funkcijo, v kateri sem. Pri vsakem klicu se število listov, leaves, branhes zmanjša na polovico
             return BuildMerkleRootHash(merkleBranches);
         }
 
-
+        /// <summary>
+        /// Izračunam hash
+        /// </summary>
+        /// <param name="rawData"></param>
+        /// <returns></returns>
         public static string CalculateHash(string rawData)
         {
             // Create a SHA256   
@@ -140,6 +176,9 @@ namespace Blockchain
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < bytes.Length; i++)
                 {
+                    // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
+                    // npr ToString("x") bi vrnil samo d 
+                    // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je to potrebno
                     builder.Append(bytes[i].ToString("x2"));
                 }
                 return builder.ToString();

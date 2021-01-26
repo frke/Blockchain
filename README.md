@@ -2,8 +2,8 @@
 
 ## Build, edit
 
- Projekt Blokchain.sln odpri z Visual Stuido 2019
- Iz nuget se naložita paketa: EmbedIO, Newtonsoft.Json
+Projekt Blokchain.sln odpri z Visual Stuido 2019
+Iz nuget se naložita paketa: EmbedIO, Newtonsoft.Json
 
 ## Opis programa in nastavitve
 
@@ -16,13 +16,17 @@ Miner računa hash s funkcijo SHA256, zahtevnost računanja se nastavi s spremen
 Novi hash se računa iz: številke bloka, hash od prejšnjega bloka, TimeStamp bloka, težavnosti (nounce), merkleRootHash
 v kodi: rowData = block.Index + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash
 
+merkleRootHash se izračuna iz transakcij, ki so vključene v en blok. Vsaka transakcija vsebuje polja: tran.From + tran.To + tran.Amount + tran.Description. 
+Če se spremeni samo en byte v eni transakciji, je merkleRootHash drugačen.
+Glej metodo: private string FindMerkleRootHash(IList<Transaction> transactionList)
+
 
 ## Post in get metodi za klic API
 
 Ko program poženem lokalno, se naredi web server na privzetem naslovu: http://localhost:5449
 Port se lahko nastavi drug.
 
-Za debug in test sem uporabil Postman https://web.postman.co
+Za debug in test sem uporabil Postman https://web.postman.com
 
 Klic za dodajanje transakcije je POST, json:
 POST http://localhost:5449/api/add
@@ -53,10 +57,3 @@ GET http://localhost:5449/api/blocks
 
 Klic za pregled točno določenega bloka X, 0 je prvi blok itd
 GET http://localhost:5449/api/blocks/index/0
-
-
-
-
-
-
-
