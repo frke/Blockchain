@@ -23,9 +23,9 @@ namespace Blockchain
                 rawTransactionList.Add(transaction);
             }
         }
-        public void AddRaw(string sender, string receiver, string amount, string description)
+        public void AddRaw(string sender, string receiver, string type, string amount, string description)
         {
-            var transaction = new Transaction(sender, receiver, amount, description);
+            var transaction = new Transaction(sender, receiver, type, amount, description);
             lock (lockObj)
             {
                 rawTransactionList.Add(transaction);
