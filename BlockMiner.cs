@@ -119,7 +119,7 @@ namespace Blockchain
             // najprej dobim listo hashev, 2-krat kličem sha256
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
-                    CalculateHash(tran.Sender + tran.Receiver + tran.Type + tran.Amount + tran.Description)
+                    CalculateHash(tran.Sender + tran.Receiver + tran.Type + tran.Value + tran.Description)
                     )
                 ).ToList();
             // iz liste katere nato izračuna merkle root hash
