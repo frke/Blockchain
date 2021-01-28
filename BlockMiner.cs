@@ -73,7 +73,7 @@ namespace Blockchain
                 TimeStamp = DateTime.UtcNow,
                 Nounce = 0,
                 TransactionList = TransactionPool.TakeAll(),
-                Index = (lastBlock?.Index + 1 ?? 0),
+                BlockNum = (lastBlock?.BlockNum + 1 ?? 0),
                 PrevHash = lastBlock?.Hash ?? string.Empty
             };
 
@@ -98,7 +98,7 @@ namespace Blockchain
             do
             {
                 nounce++;
-                var rowData = block.Index + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash;
+                var rowData = block.BlockNum + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash;
                 hash = CalculateHash(CalculateHash(rowData));
             }
 
@@ -119,7 +119,7 @@ namespace Blockchain
             // najprej dobim listo hashev, 2-krat kličem sha256
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
-                    CalculateHash(tran.From + tran.To + tran.Amount + tran.Description)
+                    CalculateHash(tran.Sender + tran.Receiver + tran.Amount + tran.Description)
                     )
                 ).ToList();
             // iz liste katere nato izračuna merkle root hash
@@ -177,7 +177,7 @@ namespace Blockchain
             {
                 // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
                 // npr ToString("x") bi vrnil samo d 
-                // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je to potrebno
+                // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je potrebno
                 builder.Append(bytes[i].ToString("x2"));
             }
             return builder.ToString();

@@ -4,15 +4,15 @@
     {
 
         public Transaction() { }
-        public Transaction(string from, string to, string amount, string description)
+        public Transaction(string sender, string receiver, string amount, string description)
         {
-            this.From = from;
-            this.To = to;
+            this.Sender = sender;
+            this.Receiver = receiver;
             this.Amount = amount;
             this.Description = description;
         }
-        public string From { get; set; }
-        public string To { get; set; }
+        public string Sender { get; set; }
+        public string Receiver { get; set; }
         public string Amount { get; set; }
         public string Description { get; set; }
     }

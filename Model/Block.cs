@@ -5,7 +5,7 @@ namespace Blockchain.Model
 {
     public class Block
     {
-        public long Index { get; set; }
+        public long BlockNum { get; set; }
         public DateTime TimeStamp { get; set; }
         public string Hash { get; set; }
         public string PrevHash { get; set; }

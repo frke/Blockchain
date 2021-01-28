@@ -48,22 +48,22 @@ namespace Blockchain
         public sealed class Controller : WebApiController
         {
 
-            //GET http://localhost:5449/api/blocks
-            [Route(HttpVerbs.Get, "/blocks")]
+            //GET http://localhost:5449/api/block
+            [Route(HttpVerbs.Get, "/block")]
             public string GetAllBlocks() => JsonConvert.SerializeObject(DependencyManager.BlockMiner.Blockchain);
 
-            //GET http://localhost:5449/api/blocks/index/{index?}
-            [Route(HttpVerbs.Get, "/blocks/index/{index?}")]
-            public string GetAllBlocks(int index)
+            //GET http://localhost:5449/api/block/blocknum/{blocknum?}
+            [Route(HttpVerbs.Get, "/block/blocknum/{blocknum?}")]
+            public string GetAllBlocks(int blocknum)
             {
                 Model.Block block = null;
-                if (index < DependencyManager.BlockMiner.Blockchain.Count)
-                    block = DependencyManager.BlockMiner.Blockchain[index];
+                if (blocknum < DependencyManager.BlockMiner.Blockchain.Count)
+                    block = DependencyManager.BlockMiner.Blockchain[blocknum];
                 return JsonConvert.SerializeObject(block);
             }
 
-            //GET http://localhost:5449/api/blocks/latest
-            [Route(HttpVerbs.Get, "/blocks/latest")]
+            //GET http://localhost:5449/api/block/latest
+            [Route(HttpVerbs.Get, "/block/latest")]
             public string GetLatestBlocks()
             {
                 var block = DependencyManager.BlockMiner.Blockchain.LastOrDefault();
@@ -71,7 +71,7 @@ namespace Blockchain
             }
 
             //Post http://localhost:5449/api/add
-            //Body >> {"From":"amir","To":"bob","Amount":"10", "description":"To je opis transakcije"}
+            //Body >> {"Sender":"amir","Receiver":"bob","Amount":"10", "description":"Opis transakcije"}
             [Route(HttpVerbs.Post, "/add")]
             public void AddTransaction()
             {
