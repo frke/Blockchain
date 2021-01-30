@@ -1,6 +1,8 @@
 ﻿using Blockchain.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,18 +13,21 @@ namespace Blockchain
 {
     public class BlockMiner
     {
-        // MINING_PERIOD je fisken čas, vsakih x milisekund se naredi nov blok, 
+        // MINING_PERIOD je fisken čas, vsakih x milisekund se naredi nov blok,
         private static readonly int MINING_PERIOD = 20000;
+
         // Hashi se ne računajo, če je število transakcij v bloku manj ali enako kot STEVILO_TRANSAKCIJ_V_BLOKU_MIN
         private static readonly int STEVILO_TRANSAKCIJ_V_BLOKU_MIN = 1;
+
         // zahtevnost računanja: število ničel pove po približno koliko iteracijah se bo našel ustrezen hash. 4 ničle pomenijo nekaj 10000 ponovitev
         private static readonly string KOLIKO_NICEL_NA_ZACETKU_HASH = "0000";
 
         // kliče vsakič, preden začne računati hash od bloka
         private TransactionPool TransactionPool { get => DependencyManager.TransactionPool; }
+
         public List<Block> Blockchain { get; private set; }
         private CancellationTokenSource cancellationToken;
-        
+
         /// <summary>
         /// >Startam na začetku izvajanja programa
         /// </summary>
@@ -30,6 +35,7 @@ namespace Blockchain
         {
             Blockchain = new List<Block>();
         }
+
         /// <summary>
         /// Začetek izvajanja programa. DoGenerateBlock() se sam nikoli ne konča - vsebuje while(true), zato je uporabljen cancellationToken ?????
         /// </summary>
@@ -39,6 +45,7 @@ namespace Blockchain
             Task.Run(() => DoGenerateBlock(), cancellationToken.Token);
             Console.WriteLine("Mining has started");
         }
+
         /// <summary>
         /// Ustavi izvajanje programa.
         /// </summary>
@@ -47,6 +54,7 @@ namespace Blockchain
             cancellationToken.Cancel();
             Console.WriteLine("Mining has stopped");
         }
+
         /// <summary>
         /// Sproži generiranje bloka in potem počaka toliko časa, kot je nastavljeno v spremenljivki MINIG_PERIOD
         /// </summary>
@@ -56,9 +64,27 @@ namespace Blockchain
             {
                 var startTime = DateTime.Now.Millisecond;
                 GenerateBlock();
+                //SaveBlock();
                 var endTime = DateTime.Now.Millisecond;
                 var remainTime = MINING_PERIOD - (endTime - startTime);
                 Thread.Sleep(remainTime < 0 ? 0 : remainTime);
+            }
+        }
+
+        /// <summary>
+        /// Shrani blok v bazo
+        /// </summary>
+        private void SaveBlock(Block block)
+        {
+            // Če je prvi blok == 0 prepišem file, sicer dodajam na konec
+            if (block?.BlockNum == 0)
+            {
+                File.WriteAllText(@"MojBlockchain.json", JsonConvert.SerializeObject(block,Formatting.Indented) + Environment.NewLine);
+            }
+            else
+            {
+                // to se bo izvedlo, tudi če je block null
+                File.AppendAllText(@"MojBlockchain.json", JsonConvert.SerializeObject(block, Formatting.Indented) + Environment.NewLine);
             }
         }
 
@@ -83,8 +109,10 @@ namespace Blockchain
             {
                 MineBlock(block);
                 Blockchain.Add(block);
+                SaveBlock(block);
             }
         }
+
         /// <summary>
         /// Ta metoda rudari en blok toliko časa, da najde pravi hash, ki se začne z xxxx ničlami
         /// Ko hash najde, določi block.Hash in block.Nounce
@@ -109,7 +137,7 @@ namespace Blockchain
         }
 
         /// <summary>
-        /// Izračuna merkle root iz podanih transakcij. 
+        /// Izračuna merkle root iz podanih transakcij.
         /// Za iste transakcije je merkleroo hasa vedno enak
         /// </summary>
         /// <param name="transactionList"></param>
@@ -166,21 +194,23 @@ namespace Blockchain
         /// <returns></returns>
         public static string CalculateHash(string rawData)
         {
-            // Create a SHA256   
-            using SHA256 sha256Hash = SHA256.Create();
-            // ComputeHash - returns byte array  
-            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-            // Convert byte array to a string   
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
+            // Create a SHA256
+            using (SHA256 sha256Hash = SHA256.Create())
             {
-                // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
-                // npr ToString("x") bi vrnil samo d 
-                // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je potrebno
-                builder.Append(bytes[i].ToString("x2"));
+                // ComputeHash - returns byte array
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    // ToString("x2") vrne hexadecimalno predstavitev byta, npr 13 vrne "0d"
+                    // npr ToString("x") bi vrnil samo d
+                    // x2 pomeni, da vrne 2 znaka, na začetku doda 0, če je potrebno
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
             }
-            return builder.ToString();
         }
     }
 }

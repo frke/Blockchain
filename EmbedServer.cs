@@ -47,6 +47,13 @@ namespace Blockchain
 
         public sealed class Controller : WebApiController
         {
+            //GET http://localhost:5449/ping
+            [Route(HttpVerbs.Get, "/ping")]
+            public string TableTennis()
+            {
+                var pong = new Model.Ping(); // vrnem objekt pong z default vrednostmi class-a Model.Ping
+                return JsonConvert.SerializeObject(pong);
+            }
 
             //GET http://localhost:5449/api/block
             [Route(HttpVerbs.Get, "/block")]
