@@ -50,7 +50,7 @@ namespace Blockchain
 
             bool success = VerifyData(message, signedMessage, RSAPublicKeyInfo);
 
-            return "Verified:" + success.ToString() + signedMessage;
+            return "Verified:" + Convert.ToInt32(success) + ";" + signedMessage;
         }
 
         public static string SignData(string message, RSAParameters privateKey)

@@ -78,7 +78,7 @@ namespace Blockchain
             }
 
             //Post http://localhost:5449/api/add
-            //Body >> {"Sender":"amir","Receiver":"bob","Type":"vplaèilo","Value":"10", "description":"Opis transakcije"}
+            //Body >> {"Sender":"amir","ReceiverAddress":"bob","Type":"vplaèilo","Value":"10", "description":"Opis transakcije"}
             [Route(HttpVerbs.Post, "/add")]
             public void AddTransaction()
             {

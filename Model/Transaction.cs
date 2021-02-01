@@ -4,16 +4,16 @@
     {
 
         public Transaction() { }
-        public Transaction(string sender, string receiver, string type, string value, string description)
+        public Transaction(string sender, string receiveraddress, string type, string value, string description)
         {
             this.Sender = sender;
-            this.Receiver = receiver;
+            this.ReceiverAddress = receiveraddress;
             this.Type = type;
             this.Value = value;
             this.Description = description;
         }
         public string Sender { get; set; }
-        public string Receiver { get; set; }
+        public string ReceiverAddress { get; set; }
         public string Type { get; set; }
         public string Value { get; set; }
         public string Description { get; set; }

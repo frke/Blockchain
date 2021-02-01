@@ -22,16 +22,16 @@ namespace Blockchain
             {
                 string[] data = new string[] { transaction.Sender, transaction.Type, transaction.Value, transaction.Description };
 
-                // Receiver == podpis
-                transaction.Receiver = Crypto.Poskus(data);
+                // ReceiverAddress == podpis
+                transaction.ReceiverAddress = Crypto.Poskus(data);
 
-                //Crypto.VerifyData(transaction.Sender+transaction.Type+ transaction.Value+ transaction.Description, transaction.Receiver)
+                //Crypto.VerifyData(transaction.Sender+transaction.Type+ transaction.Value+ transaction.Description, transaction.ReceiverAddress)
                 rawTransactionList.Add(transaction);
             }
         }
-        //public void AddRaw(string sender, string receiver, string type, string value, string description)
+        //public void AddRaw(string sender, string receiveraddress, string type, string value, string description)
         //{
-        //    var transaction = new Transaction(sender, receiver, type, value, description);
+        //    var transaction = new Transaction(sender, receiveraddress, type, value, description);
         //    lock (lockObj)
         //    {
         //        rawTransactionList.Add(transaction);

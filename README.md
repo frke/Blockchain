@@ -7,7 +7,7 @@ Iz nuget se naložita paketa: EmbedIO, Newtonsoft.Json
 
 ## Opis programa in nastavitve
 
-Struktura podatkov je v mapi Model. Vsebuje Blok in Transaction. Transakcija je iz polj: Sender, Receiver, Type, Value, Description
+Struktura podatkov je v mapi Model. Vsebuje Blok in Transaction. Transakcija je iz polj: Sender, ReceiverAddress, Type, Value, Description
 
 Bloki se kreirajo vsakih MINING_PERIOD sekund (nastavljeno 20 vsakih sekund) in če je število transakcij za obdelavo večje ali enako kot STEVILO_TRANSAKCIJ_V_BLOKU_MIN (privzeto 1)
 
@@ -16,7 +16,7 @@ Miner računa hash s funkcijo SHA256, zahtevnost računanja se nastavi s spremen
 Novi hash se računa iz: številke bloka, hash od prejšnjega bloka, TimeStamp bloka, težavnosti (nounce), merkleRootHash
 v kodi: rowData = block.blocknum + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash
 
-merkleRootHash se izračuna iz transakcij, ki so vključene v en blok. Vsaka transakcija vsebuje polja: tran.Sender + tran.Receiver + tran.Type + tran.Value + tran.Description. 
+merkleRootHash se izračuna iz transakcij, ki so vključene v en blok. Vsaka transakcija vsebuje polja: tran.Sender + tran.ReceiverAddress + tran.Type + tran.Value + tran.Description. 
 Če se spremeni samo en byte v eni transakciji, je merkleRootHash drugačen.
 Glej metodo: private string FindMerkleRootHash(IList<Transaction> transactionList)
 
@@ -30,7 +30,7 @@ Za debug in test sem uporabil Postman https://web.postman.com
 
 Klic za dodajanje transakcije je POST, json:
 POST http://localhost:5449/api/add
-{"Sender":"Franc","Receiver":"Janez","Type":"vplačilo","Value":"15","Description":"Opis tekst"}
+{"Sender":"Franc","ReceiverAddress":"Janez","Type":"vplačilo","Value":"15","Description":"Opis tekst"}
 
 Klic za pregled zadnjega bloka vrne json
 GET http://localhost:5449/api/block/latest
@@ -44,7 +44,7 @@ Odgovor:
     "TransactionList": [
         {
             "Sender": "Franc",
-            "Receiver": "Janez",
+            "ReceiverAddress": "Janez",
             "Type": "vplačilo",
             "Value": "15"
             "Description":"Opis tekst"
