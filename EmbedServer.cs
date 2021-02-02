@@ -14,7 +14,7 @@ namespace Blockchain
         private string url;
         public EmbedServer(string port)
         {
-            url = $"http://localhost:{port}/";
+            url = $"http://*:{port}/";
 
             server = CreateWebServer(url);
         }
