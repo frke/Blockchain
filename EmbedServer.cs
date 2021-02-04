@@ -86,6 +86,26 @@ namespace Blockchain
                 if (data != null && data.Result != null)
                     DependencyManager.TransactionPool.AddRaw(data.Result);
             }
+
+            //GET http://localhost:5449/api/peer
+            // vrne seznam znanih nodov
+            [Route(HttpVerbs.Get, "/peer")]
+            public string GetPeer()
+            {
+                // ko me kdo poklièe, vrnem podatke o svojem nodu
+                var peer = new Model.Peer
+                {
+                    PeerCount = 1,
+                    HighestBlockNum = DependencyManager.BlockMiner.Blockchain.Count(),
+                    TimeStampUtcLastSeen = DateTime.UtcNow,
+                    PeerPublicKey = "123",
+                    PeerHostName = "hp8730w",
+                    PeerHostip = "192.168.1.64",
+                    PeerFrendlyName = "Moj Blokchain node",
+                    NodeClass = "Odin"
+                };
+                return JsonConvert.SerializeObject(peer);
+            }
         }
     }
 }
