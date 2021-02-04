@@ -5,6 +5,7 @@ using EmbedIO.WebApi;
 using System;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Blockchain
 {
@@ -88,7 +89,7 @@ namespace Blockchain
             }
 
             //GET http://localhost:5449/api/peer
-            // vrne seznam znanih nodov
+            // vrne 1 node
             [Route(HttpVerbs.Get, "/peer")]
             public string GetPeer()
             {
@@ -106,6 +107,34 @@ namespace Blockchain
                 };
                 return JsonConvert.SerializeObject(peer);
             }
+
+            //GET http://localhost:5449/api/listpeers
+            // vrne seznam znanih nodov
+            [Route(HttpVerbs.Get, "/listpeers")]
+            public string ListPeers()
+            {
+                // Create a list of peers.
+                List<Model.Peer> peers = new List<Model.Peer>();
+                
+                var peer = new Model.Peer
+                {
+                    PeerCount = 1,
+                    HighestBlockNum = DependencyManager.BlockMiner.Blockchain.Count(),
+                    TimeStampUtcLastSeen = DateTime.UtcNow,
+                    PeerPublicKey = "123",
+                    PeerHostName = "hp8730w",
+                    PeerHostip = "192.168.1.64",
+                    PeerFrendlyName = "Moj Blokchain node",
+                    NodeClass = "Odin"
+                };
+                peers.Add(peer);
+                peers.Add(new Model.Peer());
+                peers.Add(peer);
+                
+                return JsonConvert.SerializeObject(peers);
+            }
+
+
         }
     }
 }
