@@ -6,14 +6,14 @@
         public Transaction() { }
         public Transaction(string tx, string sender, string receiveraddress, string type, string value, string description)
         {
-            this.Tx = tx;
+            this.Tx = tx; // transaction's signature
             this.Sender = sender;
             this.ReceiverAddress = receiveraddress;
             this.Type = type;
             this.Value = value;
             this.Description = description;
         }
-        public string Tx { get; set; }
+        public string Tx { get; internal set; }
         public string Sender { get; set; }
         public string ReceiverAddress { get; set; }
         public string Type { get; set; }
@@ -24,5 +24,10 @@
         // Verified tudi ni del blockchaina
         // napolni jo blockminer
         public bool Verified { get; set; } = false;
+
+        public override string ToString()
+        {
+            return $"{this.Sender}:{this.ReceiverAddress}:{this.Type}:{this.Value}:{this.Description}";
+        }
     }
 }

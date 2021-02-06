@@ -23,13 +23,14 @@ namespace Blockchain
 
             #region izvozključevFile
 
-            string file = @"privatekey.txt";
+            Guid g = Guid.NewGuid();
+            string file = string.Format("{0}_privatekey.txt",g);
             using (TextWriter outputStream = File.CreateText(file))
             {
                 ExportPrivateKey(RSA, outputStream);
             }
 
-            file = @"publickey.txt";
+            file = string.Format("{0}_publickey.txt", g);
 
             string pubkey = ExportPublicKeyToPEMFormat(RSA);
             using (TextWriter outputStreamPublicKey = File.CreateText(file))
@@ -46,11 +47,12 @@ namespace Blockchain
 
             //Create a new key and persist it in
             //the key container.
-            RSAPersistKeyInCSP(KeyContainerName);
+            // ne shranim več v kontejner, kako se bere, briše, doda?
+            //RSAPersistKeyInCSP(KeyContainerName);
 
             #endregion izvozključevContainer
 
-            string message = String.Join<string>(String.Empty, args); //"2017-04-10T09:37:35.351Z";
+            string message = String.Join<string>(String.Empty, args);
 
             string signedMessage = SignData(message, RSAPrivateKeyInfo);
 
