@@ -76,8 +76,8 @@ namespace Blockchain
                     // Import the private key used for signing the message
                     rsa.ImportParameters(privateKey);
 
-                    // Sign the data, using SHA512 as the hashing algorithm
-                    signedBytes = rsa.SignData(originalData, CryptoConfig.MapNameToOID("SHA512"));
+                    // Sign the data, using SHA256 as the hashing algorithm
+                    signedBytes = rsa.SignData(originalData, CryptoConfig.MapNameToOID("SHA256"));
                 }
                 catch (CryptographicException e)
                 {
@@ -108,7 +108,7 @@ namespace Blockchain
                 {
                     rsa.ImportParameters(publicKey);
 
-                    success = rsa.VerifyData(bytesToVerify, CryptoConfig.MapNameToOID("SHA512"), signedBytes);
+                    success = rsa.VerifyData(bytesToVerify, CryptoConfig.MapNameToOID("SHA256"), signedBytes);
                 }
                 catch (CryptographicException e)
                 {
