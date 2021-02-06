@@ -120,6 +120,7 @@ namespace Blockchain
         /// <param name="block"></param>
         private void MineBlock(Block block)
         {
+            // izračuna merkleRootHash za vse transakcije v bloku
             string merkleRootHash = FindMerkleRootHash(block.TransactionList);
             long nounce = -1;
             string hash;
@@ -144,10 +145,10 @@ namespace Blockchain
         /// <returns></returns>
         private string FindMerkleRootHash(IList<Transaction> transactionList)
         {
-            // najprej dobim listo hashev, 2-krat kličem sha256
+            // najprej dobim listo hash, 2-krat kličem sha256
             var transactionStrList = transactionList.Select(
                 tran => CalculateHash(
-                    CalculateHash(tran.Sender + tran.ReceiverAddress + tran.Type + tran.Value + tran.Description)
+                    CalculateHash(tran.Tx + tran.Sender + tran.ReceiverAddress + tran.Type + tran.Value + tran.Description)
                     )
                 ).ToList();
             // iz liste katere nato izračuna merkle root hash

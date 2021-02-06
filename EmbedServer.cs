@@ -12,7 +12,7 @@ namespace Blockchain
     public class EmbedServer
     {
         private WebServer server;
-        private string url;
+        private readonly string url;
         public EmbedServer(string port)
         {
             url = $"http://*:{port}/";
@@ -79,6 +79,8 @@ namespace Blockchain
             }
 
             //Post http://localhost:5449/api/add
+            //polje Tx:Tekst ne pošljem, ker se bo tako ali tako izraèunal
+            // polja Verified ne pošljem, ker se bo izraèunal
             //Body >> {"Sender":"amir","ReceiverAddress":"bob","Type":"vplaèilo","Value":"10", "description":"Opis transakcije"}
             [Route(HttpVerbs.Post, "/add")]
             public void AddTransaction()

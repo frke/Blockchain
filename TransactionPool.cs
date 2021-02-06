@@ -8,7 +8,7 @@ namespace Blockchain
     {
         private List<Transaction> rawTransactionList;
 
-        private object lockObj;
+        private readonly object lockObj;
 
         public TransactionPool()
         {
@@ -20,12 +20,18 @@ namespace Blockchain
         {
             lock (lockObj)
             {
-                string[] data = new string[] { transaction.Sender, transaction.Type, transaction.Value, transaction.Description };
+                string[] data = new string[] { transaction.Tx, transaction.Sender, transaction.Type, transaction.Value, transaction.Description };
 
-                // ReceiverAddress == podpis
-                transaction.ReceiverAddress = Crypto.Poskus(data);
+                // Transaction.Tx je podpis in hkrati identifikcijska številka transakcije
+                // data se podpiše s privatnim ključem
+                // vrne tudi polje verifid, ki se izračuna takoj po podpisu.
+                bool verified;
+                transaction.Tx = Crypto.Podpis(data, out verified);
+                // če imam data in transaction.Tx, lahko preverim, če je podpis pristen - glej polje transaction.Verified
 
-                //Crypto.VerifyData(transaction.Sender+transaction.Type+ transaction.Value+ transaction.Description, transaction.ReceiverAddress)
+                transaction.Verified = verified;
+
+                //Crypto.VerifyData(transaction.Sender + transaction.Receiver transaction.Type + transaction.Value + transaction.Description)
                 rawTransactionList.Add(transaction);
             }
         }

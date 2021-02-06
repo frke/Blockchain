@@ -7,7 +7,8 @@ Iz nuget se naložita paketa: EmbedIO, Newtonsoft.Json
 
 ## Opis programa in nastavitve
 
-Struktura podatkov je v mapi Model. Vsebuje Blok in Transaction. Transakcija je iz polj: Sender, ReceiverAddress, Type, Value, Description
+Struktura podatkov je v mapi Model. Vsebuje Blok, Transaction, Ping, Peer. 
+Transakcija je iz polj: Tx, Sender, ReceiverAddress, Type, Value, Description. Polje Verified je v transakciji, vendar ni vključeno v podpis Tx.
 
 Bloki se kreirajo vsakih MINING_PERIOD sekund (nastavljeno 20 vsakih sekund) in če je število transakcij za obdelavo večje ali enako kot STEVILO_TRANSAKCIJ_V_BLOKU_MIN (privzeto 1)
 
@@ -16,8 +17,8 @@ Miner računa hash s funkcijo SHA256, zahtevnost računanja se nastavi s spremen
 Novi hash se računa iz: številke bloka, hash od prejšnjega bloka, TimeStamp bloka, težavnosti (nounce), merkleRootHash
 v kodi: rowData = block.blocknum + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash
 
-merkleRootHash se izračuna iz transakcij, ki so vključene v en blok. Vsaka transakcija vsebuje polja: tran.Sender + tran.ReceiverAddress + tran.Type + tran.Value + tran.Description. 
-Če se spremeni samo en byte v eni transakciji, je merkleRootHash drugačen.
+merkleRootHash se izračuna iz transakcij, ki so vključene v en blok. Vsaka transakcija vsebuje polja: tran.Tx, tran.Sender + tran.ReceiverAddress + tran.Type + tran.Value + tran.Description. 
+Če se spremeni samo en byte v eni transakciji, je merkleRootHash drugačen, Verified dobi v tem primeru False
 Glej metodo: private string FindMerkleRootHash(IList<Transaction> transactionList)
 
 
@@ -43,11 +44,13 @@ Odgovor:
     "Nounce": 103767,
     "TransactionList": [
         {
+			"Tx":"",
             "Sender": "Franc",
             "ReceiverAddress": "Janez",
             "Type": "vplačilo",
             "Value": "15"
             "Description":"Opis tekst"
+			"Verfied":"True"
         }
     ]
 }
@@ -58,3 +61,10 @@ GET http://localhost:5449/api/block
 
 Klic za pregled točno določenega bloka X, 0 je prvi blok itd
 GET http://localhost:5449/api/block/blocknum/0
+
+
+To do: Dobi eno transakcijo po v bloku in tx - to bo verjetno najhitejši način
+GET http://localhost:5449/api/block/blocknum/0/tx
+
+To do: Dobi eno transakcijo po tx - kako bom to iskal?
+GET http://localhost:5449/api/tx

@@ -2,12 +2,17 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-
 namespace Blockchain
 {
     internal class Crypto
     {
-        public static string Poskus(string[] args)
+        /// <summary>
+        /// Ta metoda podpiše array podanih stringov in vrne podpis v obliki string
+        /// hkrati vrne out polje verified: podatek, če je transakcija verificirana
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static string Podpis(string[] args, out bool verified)
         {
             //Generate a public/private key pair.
             RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
@@ -17,6 +22,7 @@ namespace Blockchain
             RSAParameters RSAPrivateKeyInfo = RSA.ExportParameters(true);
 
             #region izvozključevFile
+
             string file = @"privatekey.txt";
             using (TextWriter outputStream = File.CreateText(file))
             {
@@ -34,6 +40,7 @@ namespace Blockchain
             #endregion izvozključevFile
 
             #region izvozključevContainer
+
             // glej https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rsacryptoserviceprovider.-ctor?view=net-5.0#System_Security_Cryptography_RSACryptoServiceProvider__ctor_System_Security_Cryptography_CspParameters_
             string KeyContainerName = "MyKeyContainer";
 
@@ -46,11 +53,11 @@ namespace Blockchain
             string message = String.Join<string>(String.Empty, args); //"2017-04-10T09:37:35.351Z";
 
             string signedMessage = SignData(message, RSAPrivateKeyInfo);
-            
 
-            bool success = VerifyData(message, signedMessage, RSAPublicKeyInfo);
+            // to je out polje
+            verified = VerifyData(message, signedMessage, RSAPublicKeyInfo);
 
-            return "Verified:" + Convert.ToInt32(success) + ";" + signedMessage;
+            return signedMessage;
         }
 
         public static string SignData(string message, RSAParameters privateKey)
@@ -258,7 +265,6 @@ namespace Blockchain
             }
         }
 
-
         public static void RSAPersistKeyInCSP(string ContainerName)
         {
             try
@@ -266,10 +272,11 @@ namespace Blockchain
                 // Create a new instance of CspParameters.  Pass
                 // 13 to specify a DSA container or 1 to specify
                 // an RSA container.  The default is 1.
-                CspParameters cspParams = new CspParameters();
-
-                // Specify the container name using the passed variable.
-                cspParams.KeyContainerName = ContainerName;
+                CspParameters cspParams = new CspParameters
+                {
+                    // Specify the container name using the passed variable.
+                    KeyContainerName = ContainerName
+                };
 
                 //Create a new instance of RSACryptoServiceProvider to generate
                 //a new key pair.  Pass the CspParameters class to persist the
@@ -292,18 +299,20 @@ namespace Blockchain
                 // Create a new instance of CspParameters.  Pass
                 // 13 to specify a DSA container or 1 to specify
                 // an RSA container.  The default is 1.
-                CspParameters cspParams = new CspParameters();
-
-                // Specify the container name using the passed variable.
-                cspParams.KeyContainerName = ContainerName;
+                CspParameters cspParams = new CspParameters
+                {
+                    // Specify the container name using the passed variable.
+                    KeyContainerName = ContainerName
+                };
 
                 //Create a new instance of RSACryptoServiceProvider.
                 //Pass the CspParameters class to use the
                 //key in the container.
-                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams);
-
-                //Delete the key entry in the container.
-                RSAalg.PersistKeyInCsp = false;
+                RSACryptoServiceProvider RSAalg = new RSACryptoServiceProvider(cspParams)
+                {
+                    //Delete the key entry in the container.
+                    PersistKeyInCsp = false
+                };
 
                 //Call Clear to release resources and delete the key from the container.
                 RSAalg.Clear();
