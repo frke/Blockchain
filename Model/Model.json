@@ -1,0 +1,64 @@
+﻿{
+  "igralnica": "vrtiljak",
+  "guid": "98392837239847",
+  "ime": "To je ime",
+  "potrjevalci": [
+    {
+      "guid potrjevalca": "1231231",
+      "public key": "5646756",
+      "url za sprejem transakcij": [ "https://domena:port","url2", "url3" ]
+
+    }
+  ],
+  "igralci": [
+    {
+      "guid osebe": "123",
+      "Priimek": "Novak",
+      "ime": "Janez",
+      "davcna": "123",
+      "datum rojstva": "1.1.2000",
+      "datum smrti": "",
+      "public": "key",
+      "police": [
+        {
+          "guid police": "123112",
+          "zacetek": "1.1.2000",
+          "konec": "31.12.2000",
+          "znesek": "50000",
+          "upravicenec": [ { "guid": "1111" } ],
+          "racuni": [
+            {
+              "guid": "154545",
+              "datum zapadlosti": "1.2.2021",
+              "znesek": "10",
+              "placila": [
+                {
+                  "guid placila": "34534534",
+                  "znesek placila": "1",
+                  "datum placila": "12.3.2021"
+                }
+
+              ]
+
+            }
+          ]
+        },
+        {
+          "guid police": "1231e2",
+          "zacetek": "1.1.2010",
+          "konec": "31.12.2010",
+          "znesek": "10000"
+        }
+      ]
+    },
+    {
+      "guid osebe": "1111",
+      "Priimek": "Novak",
+      "ime": "Marija",
+      "davcna": "123423",
+      "datum rojstva": "1.1.1999",
+      "datum smrti": "",
+      "public": "key"
+    }
+  ]
+}
