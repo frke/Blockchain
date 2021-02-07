@@ -96,7 +96,7 @@ namespace Blockchain
             var lastBlock = Blockchain.LastOrDefault();
             var block = new Block()
             {
-                TimeStamp = DateTime.UtcNow,
+                Timestamp = DateTime.UtcNow,
                 Nounce = 0,
                 TransactionList = TransactionPool.TakeAll(),
                 BlockNum = (lastBlock?.BlockNum + 1 ?? 0),
@@ -127,7 +127,7 @@ namespace Blockchain
             do
             {
                 nounce++;
-                var rowData = block.BlockNum + block.PrevHash + block.TimeStamp.ToString() + nounce + merkleRootHash;
+                var rowData = block.BlockNum + block.PrevHash + block.Timestamp.ToString() + nounce + merkleRootHash;
                 hash = CalculateHash(CalculateHash(rowData));
             }
 

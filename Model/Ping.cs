@@ -8,8 +8,8 @@ namespace Blockchain.Model
     {
         public string Vprasanje { get; } = "Ping";
         public string Odgovor { get; } = "Pong";
-        public DateTime TimeStamp { get; set; } = DateTime.Now; // lokalni čas
-        public DateTime TimeStampUtc { get; set; } = DateTime.UtcNow; // utc čas
+        public DateTime Timestamp { get; set; } = DateTime.Now; // lokalni čas
+        public DateTime TimestampUtc { get; set; } = DateTime.UtcNow; // utc čas
         public long UnixTime { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds(); // unix čas od 1.1.1970 0:0:0
         public int VersionMajor { get; } = 0; // vsak node ima svojo verzijo Major - glavna verzija, Major med seboj niso kompatibilne
         public int VersionMinor { get; } = 0; // vsak node ima svojo verzijo - podverzija, Minor verzije so med seboj kompatibilne brez omejitev

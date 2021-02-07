@@ -100,7 +100,7 @@ namespace Blockchain
                 {
                     PeerCount = 1,
                     HighestBlockNum = DependencyManager.BlockMiner.Blockchain.Count(),
-                    TimeStampUtcLastSeen = DateTime.UtcNow,
+                    TimestampUtcLastSeen = DateTime.UtcNow,
                     PeerPublicKey = "123",
                     PeerHostName = "hp8730w",
                     PeerHostip = "192.168.1.64",
@@ -122,7 +122,7 @@ namespace Blockchain
                 {
                     PeerCount = 1,
                     HighestBlockNum = DependencyManager.BlockMiner.Blockchain.Count(),
-                    TimeStampUtcLastSeen = DateTime.UtcNow,
+                    TimestampUtcLastSeen = DateTime.UtcNow,
                     PeerPublicKey = "123",
                     PeerHostName = "hp8730w",
                     PeerHostip = "192.168.1.64",

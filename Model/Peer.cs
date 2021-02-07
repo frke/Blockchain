@@ -7,7 +7,7 @@ namespace Blockchain.Model
     class Peer
     {
         public long PeerCount{ get; set; } 
-        public DateTime TimeStampUtcLastSeen { get; set; } 
+        public DateTime TimestampUtcLastSeen { get; set; } 
         public long HighestBlockNum { get; set; }
         public string PeerPublicKey { get; set; }
         public string PeerHostName { get; set; }
