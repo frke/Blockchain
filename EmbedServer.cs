@@ -53,12 +53,12 @@ namespace Blockchain
             public string TableTennis()
             {
                 var pong = new Model.Ping(); // vrnem objekt pong z default vrednostmi class-a Model.Ping
-                return JsonConvert.SerializeObject(pong);
+                return JsonConvert.SerializeObject(pong, Formatting.Indented);
             }
 
             //GET http://localhost:5449/api/block
             [Route(HttpVerbs.Get, "/block")]
-            public string GetAllBlocks() => JsonConvert.SerializeObject(DependencyManager.BlockMiner.Blockchain);
+            public string GetAllBlocks() => JsonConvert.SerializeObject(DependencyManager.BlockMiner.Blockchain, Formatting.Indented);
 
             //GET http://localhost:5449/api/block/blocknum/{blocknum?}
             [Route(HttpVerbs.Get, "/block/blocknum/{blocknum?}")]
@@ -67,7 +67,7 @@ namespace Blockchain
                 Model.Block block = null;
                 if (blocknum < DependencyManager.BlockMiner.Blockchain.Count)
                     block = DependencyManager.BlockMiner.Blockchain[blocknum];
-                return JsonConvert.SerializeObject(block);
+                return JsonConvert.SerializeObject(block, Formatting.Indented);
             }
 
             //GET http://localhost:5449/api/block/latest
@@ -75,7 +75,7 @@ namespace Blockchain
             public string GetLatestBlocks()
             {
                 var block = DependencyManager.BlockMiner.Blockchain.LastOrDefault();
-                return JsonConvert.SerializeObject(block);
+                return JsonConvert.SerializeObject(block, Formatting.Indented);
             }
 
             //Post http://localhost:5449/api/add
@@ -107,7 +107,7 @@ namespace Blockchain
                     PeerFrendlyName = "Moj Blokchain node",
                     NodeClass = "Odin"
                 };
-                return JsonConvert.SerializeObject(peer);
+                return JsonConvert.SerializeObject(peer, Formatting.Indented);
             }
 
             //GET http://localhost:5449/api/listpeers
@@ -133,7 +133,7 @@ namespace Blockchain
                 peers.Add(new Model.Peer());
                 peers.Add(peer);
                 
-                return JsonConvert.SerializeObject(peers);
+                return JsonConvert.SerializeObject(peers, Formatting.Indented);
             }
 
 
