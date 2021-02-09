@@ -36,3 +36,10 @@ $RECYCLE.BIN/
 
 #Visual studio files
 .vs/
+
+Doc/*.crt
+Doc/*.cnf
+Doc/*.csr
+Doc/*.key
+Doc/*.pfx
+Doc/*.srl
