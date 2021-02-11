@@ -1,7 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Sandbox.Crypto;
+
+using System.ComponentModel;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+
 namespace Blockchain
 {
     internal class Crypto
@@ -14,31 +23,48 @@ namespace Blockchain
         /// <returns></returns>
         public static string Podpis(string[] args, out bool verified)
         {
-            //Generate a public/private key pair.
-            RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+            var random = new SecureRandom();
+            int keySize = 2048;
+            var keyGenerationParameters = new KeyGenerationParameters(random, keySize);
+            RsaKeyPairGenerator generator = new RsaKeyPairGenerator();
+            generator.Init(keyGenerationParameters);
 
-            //Save the public key information to an RSAParameters structure.
-            RSAParameters RSAPublicKeyInfo = RSA.ExportParameters(false);
-            RSAParameters RSAPrivateKeyInfo = RSA.ExportParameters(true);
+            var keyPair = generator.GenerateKeyPair();
+            var privateKeyParametersJson = JsonConvert.SerializeObject(keyPair.Private.ToPrivateKeyParameters());
+            var publicKeyParametersJson = JsonConvert.SerializeObject(keyPair.Public.ToPublicKeyParameters());
 
-            #region izvozključevFile
 
-            Guid g = Guid.NewGuid();
-            string file = string.Format("{0}_privatekey.txt",g);
-            using (TextWriter outputStream = File.CreateText(file))
-            {
-                ExportPrivateKey(RSA, outputStream);
-            }
+            var rsa = RSA.Create();
+            var rsaParameters = JsonConvert.DeserializeObject<RsaPublicKeyParameters>(publicKeyParametersJson).ToRSAParameters();
+            rsa.ImportParameters(rsaParameters);
 
-            file = string.Format("{0}_publickey.txt", g);
+            string message = String.Join<string>(String.Empty, args);
 
-            string pubkey = ExportPublicKeyToPEMFormat(RSA);
-            using (TextWriter outputStreamPublicKey = File.CreateText(file))
-            {
-                outputStreamPublicKey.WriteAsync(pubkey);
-            }
+            byte[] zapodpis = Encoding.UTF8.GetBytes(message);
 
-            #endregion izvozključevFile
+            var encryptedData = rsa.Encrypt(zapodpis, RSAEncryptionPadding.OaepSHA256);
+
+
+
+
+            //#region izvozključevFile
+
+            //Guid g = Guid.NewGuid();
+            //string file = string.Format("{0}_privatekey.txt",g);
+            //using (TextWriter outputStream = File.CreateText(file))
+            //{
+            //    ExportPrivateKey(RSA, outputStream);
+            //}
+
+            //file = string.Format("{0}_publickey.txt", g);
+
+            //string pubkey = ExportPublicKeyToPEMFormat(RSA);
+            //using (TextWriter outputStreamPublicKey = File.CreateText(file))
+            //{
+            //    outputStreamPublicKey.WriteAsync(pubkey);
+            //}
+
+            //#endregion izvozključevFile
 
             #region izvozključevContainer
 
@@ -52,14 +78,14 @@ namespace Blockchain
 
             #endregion izvozključevContainer
 
-            string message = String.Join<string>(String.Empty, args);
+            //  string message = String.Join<string>(String.Empty, args);
 
-            string signedMessage = SignData(message, RSAPrivateKeyInfo);
+            ///  string signedMessage = SignData(message, RSAPrivateKeyInfo);
 
             // to je out polje
-            verified = VerifyData(message, signedMessage, RSAPublicKeyInfo);
-
-            return signedMessage;
+            //   verified = VerifyData(message, signedMessage, RSAPublicKeyInfo);
+            verified = true;
+            return Encoding.UTF8.GetString(encryptedData);
         }
 
         public static string SignData(string message, RSAParameters privateKey)
