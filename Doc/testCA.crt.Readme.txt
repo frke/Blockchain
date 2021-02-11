@@ -1,0 +1,53 @@
+https://sockettools.com/kb/creating-certificate-using-openssl/
+
+1.
+Generiram nov private RSA ključ v pem obliki:
+C:\Users\Franc\Documents\Projekti\Blockchain\Doc>openssl genrsa -out testCA.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+................................................................+++++
+.........+++++
+e is 65537 (0x010001)
+
+
+2.
+Iz njega kreiram server ceritifkat:
+
+To je root certifikat kreiran z
+ukaz:
+openssl req -x509 -new -nodes -key testCA.key -sha256 -days 365 -out testCA.crt -config localhost.cnf -extensions v3_ca -subj "/CN=SocketTools Test CA"
+
+Konfiguracijska datoteka zgoraj je localhost.cnf
+
+
+3. Certifkat importiram v Local mashine
+
+
+SERVER CERTIFICATE
+
+4. Naredim server certificat
+4.1
+C:\Users\Franc\Documents\Projekti\Blockchain\Doc>openssl genrsa -out localhost.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..............................................................+++++
+..........+++++
+e is 65537 (0x010001)
+
+4.2
+Naredim CSR:
+openssl req -new -key localhost.key -out localhost.csr -config localhost.cnf -extensions v3_req
+
+4.3
+Naredim localhost.crt
+C:\Users\Franc\Documents\Projekti\Blockchain\Doc>openssl x509 -req -in localhost.csr -CA testCA.crt -CAkey testCA.key -CAcreateserial -out localhost.crt -days 365 -sha256 -extfile localhost.cnf -extensions v3_req
+Signature ok
+subject=C = SI, ST = SI\C3\82\C2\B8, L = Logatec, O = Vrtiljak Development, CN = localhost
+Getting CA Private Key
+
+4.4
+You combine the server certificate localhost.crt and its private key localhost.key to create a PKCS12 certificate, which on Windows commonly uses the PFX file extension. To do this, use the following command:
+
+openssl pkcs12 -export -out localhost.pfx -inkey localhost.key -in localhost.crt -certfile TestCA.crt -password pass:testing
+
+4.5
+Tako narejen localhost.pfx uvozim v store
+
